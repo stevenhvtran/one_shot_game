@@ -1,0 +1,8 @@
+# Ignore IntelliJ
+/.idea
+
+# Ignore builds
+/out
+
+# Ignore .iml
+The Game.iml
