@@ -1,9 +1,8 @@
-import java.util.ArrayList;
-
 public class Player extends PhysicsSprite {
     private String missileImagePath;
-    private ArrayList<Missile> missiles = new ArrayList<>();
+    private Missile missile;
     private boolean onFloor = false;
+
 
     public Player(int x, int y, String imagePath, String missileImagePath) {
         super(x, y, imagePath, 3, 5);
@@ -35,13 +34,18 @@ public class Player extends PhysicsSprite {
                 onFloor = false;
                 break;
             case SHOOT:
-                shootMissile();
+                if (missile == null) {
+                    shootMissile();
+                }
                 break;
         }
     }
 
+    public void deleteMissile() {
+        missile = null;
+    }
+
     private void shootMissile() {
-        Missile missile;
         if (getDirection() == Directions.LEFT) {
             missile = new Missile(getX() - 20, getY() + getHeight()/2 , missileImagePath,
                     getDirection());
@@ -50,9 +54,7 @@ public class Player extends PhysicsSprite {
             missile = new Missile( getX() + getWidth(), getY() + getHeight()/2, missileImagePath,
                     getDirection());
         }
-        missiles.add(missile);
     }
-
 
     public void handleKeyRelease(Keys key) {
         switch(key) {
@@ -65,23 +67,21 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public ArrayList<Missile> getMissiles() {
-        return missiles;
+    public Missile getMissile() {
+        return missile;
     }
 
     @Override
     public void applyGravity() {
         if ( getVerticalVelocity() < getTerminalVelocity()) {
-            float verticalVelocity = getVerticalVelocity() + new Float(0.1);
+            float verticalVelocity = getVerticalVelocity() + (float) 0.1;
             setVerticalVelocity(verticalVelocity);
         }
     }
 
     @Override
     public void move() {
-        if (!onFloor) {
-            applyGravity();
-        }
+        applyGravity();
         setX( getX() + getHorizontalVelocity() );
         setY( getY() + Math.round(getVerticalVelocity()) );
         setDirection(getDirection());

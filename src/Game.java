@@ -41,12 +41,13 @@ public class Game extends JPanel implements ActionListener {
 
     private void initPlayers() {
 
-        createPlayer(20, 20, "src/resources/player_red.png",
+        createPlayer(800, 20, "src/resources/player_red.png",
                 "src/resources/missile_red.png",
                 "A", "D", "W", "G");
-        createPlayer(1000, 20, "src/resources/player_blue.png",
+        createPlayer(500, 20, "src/resources/player_blue.png",
                 "src/resources/missile_blue.png",
                 "LEFT", "RIGHT", "UP", "SLASH");
+
 
     }
 
@@ -108,6 +109,7 @@ public class Game extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // This block runs every tick
         updateMovement();
         checkCollisions();
         repaint();
@@ -125,22 +127,27 @@ public class Game extends JPanel implements ActionListener {
     private void updateMovement() {
         for (Player player : players) {
             player.move();
-            for (Missile missile : player.getMissiles()) {
-                // check missile visibility and delete if it is visible
+            Missile missile = player.getMissile();
+            if (missile != null) {
                 missile.move();
             }
         }
     }
 
     private void checkCollisions() {
-
-
         for (Player player : players) {
             // Check player and floor collisions
             if (player.getBounds().intersects(floor.getBounds())) {
                 player.setOnFloor();
             }
-//            if (player.getBounds().intersects())
+            for (Player player2 : players) {
+                if (player2.getMissile() != null) {
+                    if (player.getBounds().intersects(player2.getMissile().getBounds())) {
+                        player2.deleteMissile();
+                    }
+                }
+            }
+
         }
     }
 
@@ -152,7 +159,8 @@ public class Game extends JPanel implements ActionListener {
         for (Player player: players) {
             drawPlayer(g2d, player);
 
-            for (Missile missile: player.getMissiles()) {
+            Missile missile = player.getMissile();
+            if (missile != null) {
                 drawMissile(g2d, missile);
             }
         }
