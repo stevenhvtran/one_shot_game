@@ -6,15 +6,8 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements ActionListener {
     private final int DELAY = 1;
-    private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private ArrayList<Player> players = new ArrayList<>();
 
-    private static final String JUMP = "jump";
-    private static final String MOVE_LEFT = "left";
-    private static final String MOVE_RIGHT = "right";
-    private static final String STOP_LEFT = "stop left";
-    private static final String STOP_RIGHT = "stop right";
-    private static final String SHOOT = "shoot";
 
     private Floor floor;
 
@@ -41,71 +34,26 @@ public class Game extends JPanel implements ActionListener {
 
     private void initPlayers() {
 
-        createPlayer(50, 800, "src/resources/player_red.png",
+        createPlayer("Player 1", 50, 800, "src/resources/player_red.png",
                 "src/resources/missile_red.png",
-                "A", "D", "W", "G");
-        createPlayer(1850, 800, "src/resources/player_blue.png",
+                "A", "D", "W", "F");
+
+        createPlayer("Player 2", 1850, 800, "src/resources/player_blue.png",
                 "src/resources/missile_blue.png",
                 "LEFT", "RIGHT", "UP", "SLASH");
-        createPlayer(900, 800, "src/resources/player_green.png",
-                "src/resources/missile_green.png",
-                "G", "J", "Y", "K");
+
+//        createPlayer("Player 2", 900, 800, "src/resources/player_green.png",
+//                "src/resources/missile_green.png",
+//                "G", "J", "Y", "K");
+
     }
 
-    private void createPlayer(int x, int y, String imagePath, String missileImagePath, String leftKey, String rightKey,
-                              String jumpKey, String shootKey) {
-        Player player = new Player(x, y, imagePath, missileImagePath);
-        player.getInputMap(IFW).put(KeyStroke.getKeyStroke(jumpKey), JUMP);
-        player.getInputMap(IFW).put(KeyStroke.getKeyStroke(leftKey), MOVE_LEFT);
-        player.getInputMap(IFW).put(KeyStroke.getKeyStroke(rightKey), MOVE_RIGHT);
+    private void createPlayer(String playerName, int x, int y, String imagePath, String missileImagePath,
+                              String leftKey, String rightKey, String jumpKey, String shootKey) {
 
-        player.getActionMap().put(JUMP, new MoveAction(player, Player.Keys.JUMP));
-        player.getActionMap().put(MOVE_LEFT, new MoveAction(player, Player.Keys.LEFT));
-        player.getActionMap().put(MOVE_RIGHT, new MoveAction(player, Player.Keys.RIGHT));
-
-
-        player.getInputMap(IFW).put(KeyStroke.getKeyStroke("released " + leftKey), STOP_LEFT);
-        player.getInputMap(IFW).put(KeyStroke.getKeyStroke("released " + rightKey), STOP_RIGHT);
-
-        player.getActionMap().put(STOP_LEFT, new StopAction(player, Player.Keys.LEFT));
-        player.getActionMap().put(STOP_RIGHT, new StopAction(player, Player.Keys.RIGHT));
-
-        player.getInputMap(IFW).put(KeyStroke.getKeyStroke(shootKey), SHOOT);
-        player.getActionMap().put(SHOOT, new MoveAction(player, Player.Keys.SHOOT));
-
+        Player player = new Player(playerName, x, y, imagePath, missileImagePath, leftKey, rightKey, jumpKey, shootKey);
         players.add(player);
         add(player);  // add JComponent to JPanel
-    }
-
-    private class MoveAction extends AbstractAction {
-        private Player player;
-        private Player.Keys key;
-
-        public MoveAction(Player player, Player.Keys key) {
-            this.player = player;
-            this.key = key;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            player.handleKeyPress(key);
-        }
-    }
-
-    private class StopAction extends AbstractAction {
-        private Player player;
-        private Player.Keys key;
-
-        public StopAction(Player player, Player.Keys key) {
-
-            this.player = player;
-            this.key = key;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            player.handleKeyRelease(key);
-        }
     }
 
     @Override
@@ -156,6 +104,7 @@ public class Game extends JPanel implements ActionListener {
                     if (player2.getMissile() != null) {
                         if (player.getBounds().intersects(player2.getMissile().getBounds())) {
                             player2.deleteMissile();
+                            player2.incrementScore();
                             player.resetSpawn();
                         }
                     }
@@ -178,7 +127,6 @@ public class Game extends JPanel implements ActionListener {
                 drawMissile(g2d, missile);
             }
         }
-
     }
 
     private void drawMissile(Graphics2D g2d, Missile missile) {
