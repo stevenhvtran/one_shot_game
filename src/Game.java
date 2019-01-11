@@ -41,14 +41,15 @@ public class Game extends JPanel implements ActionListener {
 
     private void initPlayers() {
 
-        createPlayer(800, 20, "src/resources/player_red.png",
+        createPlayer(50, 800, "src/resources/player_red.png",
                 "src/resources/missile_red.png",
                 "A", "D", "W", "G");
-        createPlayer(500, 20, "src/resources/player_blue.png",
+        createPlayer(1850, 800, "src/resources/player_blue.png",
                 "src/resources/missile_blue.png",
                 "LEFT", "RIGHT", "UP", "SLASH");
-
-
+        createPlayer(900, 800, "src/resources/player_green.png",
+                "src/resources/missile_green.png",
+                "G", "J", "Y", "K");
     }
 
     private void createPlayer(int x, int y, String imagePath, String missileImagePath, String leftKey, String rightKey,
@@ -136,14 +137,27 @@ public class Game extends JPanel implements ActionListener {
 
     private void checkCollisions() {
         for (Player player : players) {
+
             // Check player and floor collisions
             if (player.getBounds().intersects(floor.getBounds())) {
                 player.setOnFloor();
             }
+
+            // Reset missile if it exits map
+            if (player.getMissile() != null) {
+                if (player.getMissile().getX() < 0 || player.getMissile().getX() > 1900) {
+                    player.deleteMissile();
+                }
+            }
+
+            // Check missile collisions
             for (Player player2 : players) {
-                if (player2.getMissile() != null) {
-                    if (player.getBounds().intersects(player2.getMissile().getBounds())) {
-                        player2.deleteMissile();
+                if (player != player2) {
+                    if (player2.getMissile() != null) {
+                        if (player.getBounds().intersects(player2.getMissile().getBounds())) {
+                            player2.deleteMissile();
+                            player.resetSpawn();
+                        }
                     }
                 }
             }

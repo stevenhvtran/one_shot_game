@@ -2,10 +2,13 @@ public class Player extends PhysicsSprite {
     private String missileImagePath;
     private Missile missile;
     private boolean onFloor = false;
+    private int initalX, initalY;
 
 
     public Player(int x, int y, String imagePath, String missileImagePath) {
         super(x, y, imagePath, 3, 5);
+        initalX = x;
+        initalY = y;
         this.missileImagePath = missileImagePath;
     }
 
@@ -17,6 +20,11 @@ public class Player extends PhysicsSprite {
         setVerticalVelocity(0);
         setY(getY() - 1);
         onFloor = true;
+    }
+
+    public void resetSpawn() {
+        setX(initalX);
+        setY(initalY);
     }
 
     public void handleKeyPress(Keys key) {
@@ -86,6 +94,5 @@ public class Player extends PhysicsSprite {
         setY( getY() + Math.round(getVerticalVelocity()) );
         setDirection(getDirection());
     }
-
 
 }
