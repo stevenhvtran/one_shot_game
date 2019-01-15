@@ -1,5 +1,7 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class Sprite extends JComponent {
     private int x, y;
@@ -18,8 +20,13 @@ public class Sprite extends JComponent {
     }
 
     private void loadImage( String imageName ) {
-        ImageIcon ii = new ImageIcon(imageName);
-        image = ii.getImage();
+        try {
+            image = ImageIO.read(this.getClass().getResourceAsStream(imageName));
+        } catch (IOException e) {
+            // TODO: Make this method throw the Exception and handle it further up
+            System.out.println("Could not load image from: " + imageName);
+        }
+
     }
 
     public int getX() {

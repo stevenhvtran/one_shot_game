@@ -96,7 +96,7 @@ public class Player extends PhysicsSprite {
                 break;
             case JUMP:
                 if (onFloor) {
-                    setVerticalVelocity(getVerticalVelocity() - 5);
+                    setVerticalVelocity(-5);
                 }
                 onFloor = false;
                 break;
@@ -152,7 +152,7 @@ public class Player extends PhysicsSprite {
     @Override
     public void applyGravity() {
         if ( getVerticalVelocity() < getTerminalVelocity()) {
-            float verticalVelocity = getVerticalVelocity() + (float) 0.1;
+            float verticalVelocity = getVerticalVelocity() + (float) 0.05;
             setVerticalVelocity(verticalVelocity);
         }
     }

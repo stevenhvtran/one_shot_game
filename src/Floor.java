@@ -1,5 +1,5 @@
 public class Floor extends Sprite {
-    public Floor(int x, int y) {
-        super(x, y, "src/resources/floor.png");
+    public Floor(int x, int y, String imagePath) {
+        super(x, y, imagePath);
     }
 }

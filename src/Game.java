@@ -9,7 +9,7 @@ public class Game extends JPanel implements ActionListener {
     private ArrayList<Player> players = new ArrayList<>();
 
 
-    private Floor floor;
+    private ArrayList<Floor> floors = new ArrayList<>();
 
     public Game () {
         initGame();
@@ -29,22 +29,26 @@ public class Game extends JPanel implements ActionListener {
     }
 
     private void initFloor() {
-        floor = new Floor(0, 950);
+        floors.add(new Floor(0, 950, "floor.png"));
+        floors.add(new Floor(400, 780, "short_floor.png"));
+
+        floors.add(new Floor(0, 0, "wall.png"));
+        floors.add(new Floor(1880, 0, "wall.png"));
     }
 
     private void initPlayers() {
 
-        createPlayer("Player 1", 50, 800, "src/resources/player_red.png",
-                "src/resources/missile_red.png",
-                "A", "D", "W", "F");
+        createPlayer("Player 1", 250, 800, "player_red.png",
+                "missile_red.png",
+                "A", "D", "W", "SPACE");
 
-        createPlayer("Player 2", 1850, 800, "src/resources/player_blue.png",
-                "src/resources/missile_blue.png",
+        createPlayer("Player 2", 1580, 800, "player_blue.png",
+                "missile_blue.png",
                 "LEFT", "RIGHT", "UP", "SLASH");
 
-//        createPlayer("Player 2", 900, 800, "src/resources/player_green.png",
-//                "src/resources/missile_green.png",
-//                "G", "J", "Y", "K");
+//        createPlayer("Player 2", 900, 800, "player_green.png",
+//                "missile_green.png",
+//                "F", "H", "T", "J");
 
     }
 
@@ -87,8 +91,10 @@ public class Game extends JPanel implements ActionListener {
         for (Player player : players) {
 
             // Check player and floor collisions
-            if (player.getBounds().intersects(floor.getBounds())) {
-                player.setOnFloor();
+            for (Floor floor : floors) {
+                if (player.getBounds().intersects(floor.getBounds())) {
+                    player.setOnFloor();
+                }
             }
 
             // Reset missile if it exits map
@@ -117,7 +123,9 @@ public class Game extends JPanel implements ActionListener {
     private void drawComponents(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.drawImage(floor.getImage(), floor.getX(), floor.getY(), this);
+        for (Floor floor : floors) {
+            g2d.drawImage(floor.getImage(), floor.getX(), floor.getY(), this);
+        }
 
         for (Player player: players) {
             drawPlayer(g2d, player);
