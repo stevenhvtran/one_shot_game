@@ -116,14 +116,16 @@ public class Player extends PhysicsSprite {
             case RIGHT:
                 setRightVelocity(0);
                 break;
+            default:
+                break;
         }
     }
 
     public void setOnFloor() {
-        setVerticalVelocity(0);
-        setY(getY() - 1);
         onFloor = true;
     }
+
+    public boolean getOnFloor() { return onFloor; }
 
     public void resetSpawn() {
         setX(initialX);
@@ -147,6 +149,62 @@ public class Player extends PhysicsSprite {
 
     public Missile getMissile() {
         return missile;
+    }
+
+    public enum Direction {
+        LEFT, RIGHT, TOP, BOTTOM,
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT,
+        FULL_LEFT, FULL_RIGHT
+    }
+
+    private boolean intersectsPlatformLine(Direction direction, Platform platform) {
+        switch(direction) {
+            case LEFT:
+                return getBounds().intersectsLine(platform.getLeftBound());
+            case RIGHT:
+                return getBounds().intersectsLine(platform.getRightBound());
+            case TOP:
+                return getBounds().intersectsLine(platform.getTopBound());
+            case BOTTOM:
+                return getBounds().intersectsLine(platform.getBottomBound());
+            default:
+                return false;
+        }
+    }
+
+    public boolean intersectsPlatform(Direction direction, Platform platform) {
+        switch(direction) {
+            case FULL_LEFT:
+                return intersectsPlatformLine(Direction.TOP, platform)
+                        & intersectsPlatformLine(Direction.LEFT, platform)
+                        & intersectsPlatformLine(Direction.BOTTOM, platform);
+            case FULL_RIGHT:
+                return intersectsPlatformLine(Direction.TOP, platform)
+                        & intersectsPlatformLine(Direction.RIGHT, platform)
+                        & intersectsPlatformLine(Direction.BOTTOM, platform);
+            case TOP_LEFT:
+                return intersectsPlatformLine(Direction.TOP, platform)
+                        & intersectsPlatformLine(Direction.LEFT, platform);
+            case TOP_RIGHT:
+                return intersectsPlatformLine(Direction.TOP, platform)
+                        & intersectsPlatformLine(Direction.RIGHT, platform);
+            case BOTTOM_LEFT:
+                return intersectsPlatformLine(Direction.BOTTOM, platform)
+                        & intersectsPlatformLine(Direction.LEFT, platform);
+            case BOTTOM_RIGHT:
+                return intersectsPlatformLine(Direction.BOTTOM, platform)
+                        & intersectsPlatformLine(Direction.RIGHT, platform);
+            case LEFT:
+                return intersectsPlatformLine(Direction.LEFT, platform);
+            case RIGHT:
+                return intersectsPlatformLine(Direction.RIGHT, platform);
+            case TOP:
+                return intersectsPlatformLine(Direction.TOP, platform);
+            case BOTTOM:
+                return intersectsPlatformLine(Direction.BOTTOM, platform);
+            default:
+                return false;
+        }
     }
 
     @Override

@@ -16,9 +16,7 @@ public class PhysicsSprite extends Sprite {
         LEFT, RIGHT
     }
 
-    public int getHorizontalVelocity() {
-        return leftVelocity + rightVelocity;
-    }
+
 
     public void move() {
         applyGravity();
@@ -62,6 +60,10 @@ public class PhysicsSprite extends Sprite {
 
     public void setVerticalVelocity(float verticalVelocity) {
         this.verticalVelocity = verticalVelocity;
+    }
+
+    public int getHorizontalVelocity() {
+        return leftVelocity + rightVelocity;
     }
 
     public int getTerminalVelocity() {

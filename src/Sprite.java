@@ -47,14 +47,6 @@ public class Sprite extends JComponent {
 
     public Image getImage() { return image; }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(Boolean visible) {
-        this.visible = visible;
-    }
-
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }

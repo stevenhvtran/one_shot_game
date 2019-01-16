@@ -7,9 +7,8 @@ import java.util.ArrayList;
 public class Game extends JPanel implements ActionListener {
     private final int DELAY = 1;
     private ArrayList<Player> players = new ArrayList<>();
-
-
-    private ArrayList<Floor> floors = new ArrayList<>();
+    private CollisionHandler collisionHandler;
+    private ArrayList<Platform> platforms = new ArrayList<>();
 
     public Game () {
         initGame();
@@ -21,19 +20,24 @@ public class Game extends JPanel implements ActionListener {
         setBackground(Color.WHITE);
 
         initPlayers();
-        initFloor();
+        initPlatform();
+        collisionHandler = new CollisionHandler(players, platforms);
 
         Timer timer = new Timer(DELAY, this);
         timer.start();
 
     }
 
-    private void initFloor() {
-        floors.add(new Floor(0, 950, "floor.png"));
-        floors.add(new Floor(400, 780, "short_floor.png"));
+    private void initPlatform() {
+        platforms.add(new Platform(0, 950, "floor.png"));
+//        platforms.add(new Platform(400, 780, "short_floor.png"));
 
-        floors.add(new Floor(0, 0, "wall.png"));
-        floors.add(new Floor(1880, 0, "wall.png"));
+        platforms.add(new Platform(0, 0, "wall.png"));
+        platforms.add(new Platform(1880, 0, "wall.png"));
+
+        platforms.add(new Platform(220, 700, "small_platform.png"));
+        platforms.add(new Platform(1450, 700, "small_platform.png"));
+        platforms.add(new Platform(620, 830, "big_platform.png"));
     }
 
     private void initPlayers() {
@@ -64,7 +68,7 @@ public class Game extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // This block runs every tick
         updateMovement();
-        checkCollisions();
+        collisionHandler.handleCollisions();
         repaint();
     }
 
@@ -87,44 +91,11 @@ public class Game extends JPanel implements ActionListener {
         }
     }
 
-    private void checkCollisions() {
-        for (Player player : players) {
-
-            // Check player and floor collisions
-            for (Floor floor : floors) {
-                if (player.getBounds().intersects(floor.getBounds())) {
-                    player.setOnFloor();
-                }
-            }
-
-            // Reset missile if it exits map
-            if (player.getMissile() != null) {
-                if (player.getMissile().getX() < 0 || player.getMissile().getX() > 1900) {
-                    player.deleteMissile();
-                }
-            }
-
-            // Check missile collisions
-            for (Player player2 : players) {
-                if (player != player2) {
-                    if (player2.getMissile() != null) {
-                        if (player.getBounds().intersects(player2.getMissile().getBounds())) {
-                            player2.deleteMissile();
-                            player2.incrementScore();
-                            player.resetSpawn();
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
     private void drawComponents(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        for (Floor floor : floors) {
-            g2d.drawImage(floor.getImage(), floor.getX(), floor.getY(), this);
+        for (Platform Platform : platforms) {
+            g2d.drawImage(Platform.getImage(), Platform.getX(), Platform.getY(), this);
         }
 
         for (Player player: players) {
