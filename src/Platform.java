@@ -6,18 +6,18 @@ public class Platform extends Sprite {
     }
 
     public Line2D.Float getLeftBound() {
-        return new Line2D.Float(getX(), getY(), getX(), getY() + getHeight());
+        return new Line2D.Float(getX(), getY() + 1, getX(), getY() + getHeight() - 1);
     }
 
     public Line2D.Float getRightBound() {
-        return new Line2D.Float(getX() + getWidth(), getY(), getX() + getWidth(), getY() + getHeight());
+        return new Line2D.Float(getX() + getWidth(), getY() + 1, getX() + getWidth(), getY() + getHeight() - 1);
     }
 
     public Line2D.Float getTopBound() {
-        return new Line2D.Float(getX(), getY(), getX() + getWidth(), getY());
+        return new Line2D.Float(getX() + 1, getY(), getX() + getWidth() - 1, getY());
     }
 
     public Line2D.Float getBottomBound() {
-        return new Line2D.Float(getX(), getY() + getHeight(), getX() + getWidth(), getY() + getHeight());
+        return new Line2D.Float(getX() + 1, getY() + getHeight(), getX() + getWidth() - 1, getY() + getHeight());
     }
 }

@@ -16,8 +16,6 @@ public class PhysicsSprite extends Sprite {
         LEFT, RIGHT
     }
 
-
-
     public void move() {
         applyGravity();
         setX( getX() + getHorizontalVelocity() );
@@ -36,7 +34,7 @@ public class PhysicsSprite extends Sprite {
 
     public void applyGravity() {
         if ( verticalVelocity < terminalVelocity) {
-            verticalVelocity += 0.1;
+            verticalVelocity += 0.05;
         }
     }
 

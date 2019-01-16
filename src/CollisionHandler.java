@@ -17,78 +17,152 @@ public class CollisionHandler {
 
     private void handlePlayerPlatformCollisions() {
         for (Player player : players) {
+            int horizontalVelocity = player.getHorizontalVelocity();
+            int verticalVelocity = (int) Math.ceil(player.getVerticalVelocity());
+            int deltaX, deltaY;
+            int timeX, timeY;
+
             for (Platform platform : platforms) {
-                if (player.getBounds().intersects(platform.getBounds())) {
-                    if (player.intersectsPlatform(Player.Direction.FULL_LEFT, platform)) {
-                        int delta = player.getX() + player.getWidth() - platform.getX();
-                        player.setX(player.getX() - delta);
-                    } else if (player.intersectsPlatform(Player.Direction.FULL_RIGHT, platform)) {
-                        int delta = platform.getX() + platform.getWidth() - player.getX();
-                        player.setX(player.getX() + delta);
-                    } else if (player.intersectsPlatform(Player.Direction.TOP_LEFT, platform)) {
-                        int deltaX = player.getX() + player.getWidth() - platform.getX();
-                        int deltaY = player.getY() + player.getHeight() - platform.getY();
-                        if (player.getOnFloor()) {
-                            player.setY(player.getY() - deltaY);
-                            player.setVerticalVelocity(0);
-                            player.setOnFloor();
-                        } else if (deltaX > deltaY) {
-                            player.setX(player.getX() - deltaX);
-                        } else {
-                            player.setY(player.getY() - deltaY);
-                            player.setVerticalVelocity(0);
-                            player.setOnFloor();
+                switch(player.getCollisionDirection(platform)) {
+                    case TOP_LEFT:
+                        deltaX = getDelta(Player.Direction.LEFT, player, platform);
+                        deltaY = getDelta(Player.Direction.TOP, player, platform);
+                        if (horizontalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.TOP, player, deltaY);
+                            break;
+                        } else if (verticalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.LEFT, player, deltaX);
+                            break;
                         }
-                    } else if (player.intersectsPlatform(Player.Direction.TOP_RIGHT, platform)) {
-                        int deltaX = platform.getX() + platform.getWidth() - player.getX();
-                        int deltaY = player.getY() + player.getHeight() - platform.getY();
-                        if (player.getOnFloor()) {
-                            player.setY(player.getY() - deltaY);
-                            player.setVerticalVelocity(0);
-                            player.setOnFloor();
-                        } else if (deltaX > deltaY) {
-                            player.setX(player.getX() + deltaX);
+
+                        // Resolve collision time based
+                        timeX = deltaX / horizontalVelocity;
+                        timeY = deltaY / verticalVelocity;
+                        if (timeX < timeY) {
+                            resolvePlayerCollision(Player.Direction.LEFT, player, deltaX);
                         } else {
-                            player.setY(player.getY() - deltaY);
-                            player.setVerticalVelocity(0);
-                            player.setOnFloor();
+                            resolvePlayerCollision(Player.Direction.TOP, player, deltaY);
                         }
-                    } else if (player.intersectsPlatform(Player.Direction.BOTTOM_LEFT, platform)) {
-                        int deltaX = player.getX() + player.getWidth() - platform.getX();
-                        int deltaY = platform.getY() + platform.getHeight() - player.getY();
-                        if (deltaX > deltaY) {
-                            player.setX(player.getX() - deltaX);
+                        break;
+                    case TOP_RIGHT:
+                        deltaX = getDelta(Player.Direction.RIGHT, player, platform);
+                        deltaY = getDelta(Player.Direction.TOP, player, platform);
+                        if (-horizontalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.TOP, player, deltaY);
+                            break;
+                        } else if (verticalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.RIGHT, player, deltaX);
+                            break;
+                        }
+
+                        // Resolve collision time based
+                        timeX = deltaX / -horizontalVelocity;
+                        timeY = deltaY / verticalVelocity;
+                        if (timeX < timeY) {
+                            resolvePlayerCollision(Player.Direction.RIGHT, player, deltaX);
                         } else {
-                            player.setY(player.getY() + deltaY);
-                            player.setVerticalVelocity(0);
+                            resolvePlayerCollision(Player.Direction.TOP, player, deltaY);
                         }
-                    } else if (player.intersectsPlatform(Player.Direction.BOTTOM_RIGHT, platform)) {
-                        int deltaX = platform.getX() + platform.getWidth() - player.getX();
-                        int deltaY = platform.getY() + platform.getHeight() - player.getY();
-                        if (deltaX > deltaY) {
-                            player.setX(player.getX() + deltaX);
+                        break;
+                    case BOTTOM_LEFT:
+                        deltaX = getDelta(Player.Direction.LEFT, player, platform);
+                        deltaY = getDelta(Player.Direction.BOTTOM, player, platform);
+                        if (horizontalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.BOTTOM, player, deltaY);
+                            break;
+                        } else if (-verticalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.LEFT, player, deltaX);
+                            break;
+                        }
+
+                        // Resolve collision time based
+                        timeX = deltaX / horizontalVelocity;
+                        timeY = deltaY / -verticalVelocity;
+                        if (timeX < timeY) {
+                            resolvePlayerCollision(Player.Direction.LEFT, player, deltaX);
                         } else {
-                            player.setY(player.getY() + deltaY);
-                            player.setVerticalVelocity(0);
+                            resolvePlayerCollision(Player.Direction.BOTTOM, player, deltaY);
                         }
-                    } else if (player.intersectsPlatform(Player.Direction.LEFT, platform)) {
-                        int delta = player.getX() + player.getWidth() - platform.getX();
-                        player.setX(player.getX() - delta);
-                    } else if (player.intersectsPlatform(Player.Direction.RIGHT, platform)) {
-                        int delta = platform.getX() + platform.getWidth() - player.getX();
-                        player.setX(player.getX() + delta);
-                    } else if (player.intersectsPlatform(Player.Direction.TOP, platform)) {
-                        int delta = player.getY() + player.getHeight() - platform.getY();
-                        player.setY(player.getY() - delta);
-                        player.setVerticalVelocity(0);
-                        player.setOnFloor();
-                    } else if (player.intersectsPlatform(Player.Direction.BOTTOM, platform)) {
-                        int delta = platform.getY() + platform.getHeight() - player.getY();
-                        player.setY(player.getY() + delta);
-                        player.setVerticalVelocity(0);
-                    }
+                        break;
+                    case BOTTOM_RIGHT:
+                        deltaX = getDelta(Player.Direction.RIGHT, player, platform);
+                        deltaY = getDelta(Player.Direction.BOTTOM, player, platform);
+                        if (-horizontalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.BOTTOM, player, deltaY);
+                            break;
+                        } else if (-verticalVelocity <= 0) {
+                            resolvePlayerCollision(Player.Direction.RIGHT, player, deltaX);
+                            break;
+                        }
+
+                        // Resolve collision time based
+                        timeX = deltaX / -horizontalVelocity;
+                        timeY = deltaY / -verticalVelocity;
+                        if (timeX < timeY) {
+                            resolvePlayerCollision(Player.Direction.RIGHT, player, deltaX);
+                        } else {
+                            resolvePlayerCollision(Player.Direction.BOTTOM, player, deltaY);
+                        }
+                        break;
+                    case LEFT:
+                        deltaX = getDelta(Player.Direction.LEFT, player, platform);
+                        resolvePlayerCollision(Player.Direction.LEFT, player, deltaX);
+                        break;
+                    case RIGHT:
+                        deltaX = getDelta(Player.Direction.RIGHT, player, platform);
+                        resolvePlayerCollision(Player.Direction.RIGHT, player, deltaX);
+                        break;
+                    case TOP:
+                        deltaY = getDelta(Player.Direction.TOP, player, platform);
+                        resolvePlayerCollision(Player.Direction.TOP, player, deltaY);
+                        break;
+                    case BOTTOM:
+                        deltaY = getDelta(Player.Direction.BOTTOM, player, platform);
+                        resolvePlayerCollision(Player.Direction.BOTTOM, player, deltaY);
+                        break;
+                    case NONE:
+                        break;
                 }
             }
+        }
+    }
+
+    private int getDelta(Player.Direction direction, Player player, Platform platform) {
+        switch(direction) {
+            case LEFT:
+                return player.getX() + player.getWidth() - platform.getX();
+            case RIGHT:
+                return platform.getX() + platform.getWidth() - player.getX();
+            case TOP:
+                return player.getY() + player.getHeight() - platform.getY();
+            case BOTTOM:
+                return platform.getY() + platform.getHeight() - player.getY();
+            default:
+                return 0;
+        }
+    }
+
+    private void resolvePlayerCollision(Player.Direction direction, Player player, int delta) {
+        switch(direction) {
+            case LEFT:
+                player.setX(player.getX() - delta);
+                break;
+            case RIGHT:
+                player.setX(player.getX() + delta);
+                break;
+            case TOP:
+                if (player.getVerticalVelocity() >= 0) {
+                    player.setY(player.getY() - delta);
+                    player.setVerticalVelocity(0);
+                    player.setOnFloor();
+                }
+                break;
+            case BOTTOM:
+                if (player.getVerticalVelocity() <= 0) {
+                    player.setY(player.getY() + delta);
+                    player.setVerticalVelocity(0);
+                }
+                break;
         }
     }
 

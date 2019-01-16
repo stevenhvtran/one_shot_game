@@ -164,9 +164,9 @@ public class Player extends PhysicsSprite {
     }
 
     public enum Direction {
-        LEFT, RIGHT, TOP, BOTTOM,
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT,
-        FULL_LEFT, FULL_RIGHT
+        LEFT, RIGHT, TOP, BOTTOM,
+        NONE
     }
 
     private boolean intersectsPlatformLine(Direction direction, Platform platform) {
@@ -184,16 +184,17 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public boolean intersectsPlatform(Direction direction, Platform platform) {
+    public Direction getCollisionDirection(Platform platform) {
+        for (Direction direction : Direction.values()) {
+            if (intersectsPlatform(direction, platform)) {
+                return direction;
+            }
+        }
+        return Direction.NONE;
+    }
+
+    private boolean intersectsPlatform(Direction direction, Platform platform) {
         switch(direction) {
-            case FULL_LEFT:
-                return intersectsPlatformLine(Direction.TOP, platform)
-                        && intersectsPlatformLine(Direction.LEFT, platform)
-                        && intersectsPlatformLine(Direction.BOTTOM, platform);
-            case FULL_RIGHT:
-                return intersectsPlatformLine(Direction.TOP, platform)
-                        && intersectsPlatformLine(Direction.RIGHT, platform)
-                        && intersectsPlatformLine(Direction.BOTTOM, platform);
             case TOP_LEFT:
                 return intersectsPlatformLine(Direction.TOP, platform)
                         && intersectsPlatformLine(Direction.LEFT, platform);
@@ -234,7 +235,7 @@ public class Player extends PhysicsSprite {
         }
         applyGravity();
         setX( getX() + getHorizontalVelocity() );
-        setY( getY() + Math.round(getVerticalVelocity()) );
+        setY( getY() + (int) Math.ceil(getVerticalVelocity()) );
         setDirection(getDirection());
     }
 
