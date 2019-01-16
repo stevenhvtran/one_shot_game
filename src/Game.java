@@ -9,6 +9,7 @@ public class Game extends JPanel implements ActionListener {
     private ArrayList<Player> players = new ArrayList<>();
     private CollisionHandler collisionHandler;
     private ArrayList<Platform> platforms = new ArrayList<>();
+    private Font f = new Font("Dialog", Font.BOLD, 4);
 
     public Game () {
         initGame();
@@ -38,21 +39,22 @@ public class Game extends JPanel implements ActionListener {
         platforms.add(new Platform(220, 700, "small_platform.png"));
         platforms.add(new Platform(1450, 700, "small_platform.png"));
         platforms.add(new Platform(620, 830, "big_platform.png"));
+        platforms.add(new Platform(830, 550, "small_platform.png"));
     }
 
     private void initPlayers() {
 
-        createPlayer("Player 1", 250, 800, "player_red.png",
+        createPlayer("Eddie", 250, 800, "player_red.png",
                 "missile_red.png",
-                "A", "D", "W", "SPACE");
+                "G", "J", "Y", "SPACE");
 
-        createPlayer("Player 2", 1580, 800, "player_blue.png",
+        createPlayer("Stev", 1580, 800, "player_blue.png",
                 "missile_blue.png",
                 "LEFT", "RIGHT", "UP", "SLASH");
-
-//        createPlayer("Player 2", 900, 800, "player_green.png",
+//
+//        createPlayer("Ahbi", 950, 350, "player_green.png",
 //                "missile_green.png",
-//                "F", "H", "T", "J");
+//                "A", "D", "W", "Q");
 
     }
 
@@ -76,6 +78,7 @@ public class Game extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        g.setFont(f);
         drawComponents(g);
 
         Toolkit.getDefaultToolkit().sync();
@@ -100,6 +103,7 @@ public class Game extends JPanel implements ActionListener {
 
         for (Player player: players) {
             drawPlayer(g2d, player);
+            drawCooldown(g2d, player);
 
             Missile missile = player.getMissile();
             if (missile != null) {
@@ -124,5 +128,11 @@ public class Game extends JPanel implements ActionListener {
             g2d.drawImage(player.getImage(), player.getX() + player.getWidth(), player.getY(),
                     -player.getWidth(), player.getHeight(), this);
         }
+    }
+
+    private void drawCooldown(Graphics2D g2d, Player player) {
+        int cooldownTicks = player.getMissileCooldown();
+        String cooldown = "■■■■■■■■■■■■".substring(0, (int) Math.ceil((double) cooldownTicks / 25));
+        g2d.drawString(cooldown, player.getX(), player.getY() - 5);
     }
 }

@@ -7,6 +7,7 @@ public class Player extends PhysicsSprite {
     private Missile missile;
     private boolean onFloor = false;
     private int initialX, initialY;
+    private int missileCooldown = 0;
     
     private static final String JUMP = "jump";
     private static final String MOVE_LEFT = "left";
@@ -32,6 +33,14 @@ public class Player extends PhysicsSprite {
 
     public enum Keys {
         LEFT, RIGHT, JUMP, SHOOT
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getMissileCooldown() {
+        return missileCooldown;
     }
 
     public void incrementScore() {
@@ -133,13 +142,16 @@ public class Player extends PhysicsSprite {
     }
 
     private void shootMissile() {
-        if (getDirection() == Directions.LEFT) {
-            missile = new Missile(getX() - 20, getY() + getHeight()/3 , missileImagePath,
-                    getDirection());
+        if (missileCooldown == 0) {
+            missileCooldown = 300;
+            if (getDirection() == Directions.LEFT) {
+                missile = new Missile(getX() - 20, getY() + getHeight()/3 , missileImagePath,
+                        getDirection());
 
-        } else {
-            missile = new Missile( getX() + getWidth(), getY() + getHeight()/3, missileImagePath,
-                    getDirection());
+            } else {
+                missile = new Missile( getX() + getWidth(), getY() + getHeight()/3, missileImagePath,
+                        getDirection());
+            }
         }
     }
 
@@ -176,24 +188,24 @@ public class Player extends PhysicsSprite {
         switch(direction) {
             case FULL_LEFT:
                 return intersectsPlatformLine(Direction.TOP, platform)
-                        & intersectsPlatformLine(Direction.LEFT, platform)
-                        & intersectsPlatformLine(Direction.BOTTOM, platform);
+                        && intersectsPlatformLine(Direction.LEFT, platform)
+                        && intersectsPlatformLine(Direction.BOTTOM, platform);
             case FULL_RIGHT:
                 return intersectsPlatformLine(Direction.TOP, platform)
-                        & intersectsPlatformLine(Direction.RIGHT, platform)
-                        & intersectsPlatformLine(Direction.BOTTOM, platform);
+                        && intersectsPlatformLine(Direction.RIGHT, platform)
+                        && intersectsPlatformLine(Direction.BOTTOM, platform);
             case TOP_LEFT:
                 return intersectsPlatformLine(Direction.TOP, platform)
-                        & intersectsPlatformLine(Direction.LEFT, platform);
+                        && intersectsPlatformLine(Direction.LEFT, platform);
             case TOP_RIGHT:
                 return intersectsPlatformLine(Direction.TOP, platform)
-                        & intersectsPlatformLine(Direction.RIGHT, platform);
+                        && intersectsPlatformLine(Direction.RIGHT, platform);
             case BOTTOM_LEFT:
                 return intersectsPlatformLine(Direction.BOTTOM, platform)
-                        & intersectsPlatformLine(Direction.LEFT, platform);
+                        && intersectsPlatformLine(Direction.LEFT, platform);
             case BOTTOM_RIGHT:
                 return intersectsPlatformLine(Direction.BOTTOM, platform)
-                        & intersectsPlatformLine(Direction.RIGHT, platform);
+                        && intersectsPlatformLine(Direction.RIGHT, platform);
             case LEFT:
                 return intersectsPlatformLine(Direction.LEFT, platform);
             case RIGHT:
@@ -217,6 +229,9 @@ public class Player extends PhysicsSprite {
 
     @Override
     public void move() {
+        if (missileCooldown != 0) {
+            missileCooldown -= 1;
+        }
         applyGravity();
         setX( getX() + getHorizontalVelocity() );
         setY( getY() + Math.round(getVerticalVelocity()) );
