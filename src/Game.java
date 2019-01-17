@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Game extends JPanel implements ActionListener {
-    private final int DELAY = 17;
+    private final int DELAY = 1;
     private ArrayList<Player> players = new ArrayList<>();
     private CollisionHandler collisionHandler;
     private ArrayList<Platform> platforms = new ArrayList<>();

@@ -22,7 +22,7 @@ public class Player extends PhysicsSprite {
     public Player(String name, int x, int y, String imagePath, String missileImagePath,
                   PhysicsSprite.Directions direction, String leftKey, String rightKey, String jumpKey,
                   String shootKey) {
-        super(x, y, imagePath, 11, 25);
+        super(x, y, imagePath, 3, 5);
         this.name = name;
         initialX = x;
         initialY = y;
@@ -108,7 +108,7 @@ public class Player extends PhysicsSprite {
                 break;
             case JUMP:
                 if (onFloor) {
-                    setVerticalVelocity(-14);
+                    setVerticalVelocity(-5);
                 }
                 onFloor = false;
                 break;
@@ -146,7 +146,7 @@ public class Player extends PhysicsSprite {
 
     private void shootMissile() {
         if (missileCooldown == 0) {
-            missileCooldown = 60;
+            missileCooldown = 300;
             if (getDirection() == Directions.LEFT) {
                 missile = new Missile(getX() - 20, getY() + getHeight()/3 , missileImagePath,
                         getDirection());
@@ -226,7 +226,7 @@ public class Player extends PhysicsSprite {
     @Override
     public void applyGravity() {
         if ( getVerticalVelocity() < getTerminalVelocity()) {
-            float verticalVelocity = getVerticalVelocity() + (float) 0.5;
+            float verticalVelocity = getVerticalVelocity() + (float) 0.05;
             setVerticalVelocity(verticalVelocity);
         }
     }
