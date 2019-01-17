@@ -19,12 +19,14 @@ public class Player extends PhysicsSprite {
     private String name;
     private int score = 0;
 
-    public Player(String name, int x, int y, String imagePath, String missileImagePath, String leftKey, String rightKey,
-                  String jumpKey, String shootKey) {
-        super(x, y, imagePath, 3, 5);
+    public Player(String name, int x, int y, String imagePath, String missileImagePath,
+                  PhysicsSprite.Directions direction, String leftKey, String rightKey, String jumpKey,
+                  String shootKey) {
+        super(x, y, imagePath, 11, 25);
         this.name = name;
         initialX = x;
         initialY = y;
+        setDirection(direction);
 
         bindKeys(leftKey, rightKey, jumpKey, shootKey);
 
@@ -39,13 +41,14 @@ public class Player extends PhysicsSprite {
         return name;
     }
 
+    public int getScore() { return score; }
+
     public int getMissileCooldown() {
         return missileCooldown;
     }
 
     public void incrementScore() {
         score += 1;
-        System.out.println(name + "'s Score is: " + score);
     }
     
     private void bindKeys(String leftKey, String rightKey, String jumpKey, String shootKey) {
@@ -105,7 +108,7 @@ public class Player extends PhysicsSprite {
                 break;
             case JUMP:
                 if (onFloor) {
-                    setVerticalVelocity(-5);
+                    setVerticalVelocity(-14);
                 }
                 onFloor = false;
                 break;
@@ -143,7 +146,7 @@ public class Player extends PhysicsSprite {
 
     private void shootMissile() {
         if (missileCooldown == 0) {
-            missileCooldown = 300;
+            missileCooldown = 60;
             if (getDirection() == Directions.LEFT) {
                 missile = new Missile(getX() - 20, getY() + getHeight()/3 , missileImagePath,
                         getDirection());
@@ -223,7 +226,7 @@ public class Player extends PhysicsSprite {
     @Override
     public void applyGravity() {
         if ( getVerticalVelocity() < getTerminalVelocity()) {
-            float verticalVelocity = getVerticalVelocity() + (float) 0.05;
+            float verticalVelocity = getVerticalVelocity() + (float) 0.5;
             setVerticalVelocity(verticalVelocity);
         }
     }

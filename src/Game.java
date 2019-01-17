@@ -5,18 +5,18 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Game extends JPanel implements ActionListener {
-    private final int DELAY = 1;
+    private final int DELAY = 17;
     private ArrayList<Player> players = new ArrayList<>();
     private CollisionHandler collisionHandler;
     private ArrayList<Platform> platforms = new ArrayList<>();
-    private Font f = new Font("Dialog", Font.BOLD, 4);
+    private Font cooldownFont = new Font("Dialog", Font.BOLD, 6);
+    private Font scoreFont = new Font("Dialong", Font.BOLD, 10);
 
     public Game () {
         initGame();
     }
 
     private void initGame() {
-
         setFocusable(true);
         setBackground(Color.WHITE);
 
@@ -31,25 +31,27 @@ public class Game extends JPanel implements ActionListener {
 
     private void initPlatform() {
         platforms.add(new Platform(0, 950, "floor.png"));
-//        platforms.add(new Platform(400, 780, "short_floor.png"));
 
         platforms.add(new Platform(0, 0, "wall.png"));
         platforms.add(new Platform(1880, 0, "wall.png"));
 
-        platforms.add(new Platform(220, 700, "small_platform.png"));
-        platforms.add(new Platform(1450, 700, "small_platform.png"));
-        platforms.add(new Platform(620, 830, "big_platform.png"));
-        platforms.add(new Platform(830, 550, "small_platform.png"));
+        platforms.add(new Platform(520, 680, "small_platform.png"));
+        platforms.add(new Platform(1080, 680, "small_platform.png"));
+//        platforms.add(new Platform(620, 830, "big_platform.png"));
+//        platforms.add(new Platform(830, 550, "small_platform.png"));
+
+        platforms.add(new Platform(0, 830, "block.png"));
+        platforms.add(new Platform(1620, 830, "block.png"));
     }
 
     private void initPlayers() {
 
-        createPlayer("Eddie", 250, 800, "player_red.png",
-                "missile_red.png",
-                "G", "J", "Y", "SPACE");
+        createPlayer("Eddie", 250, 700, "player_red.png",
+                "missile_red.png", PhysicsSprite.Directions.RIGHT,
+                "A", "D", "W", "SPACE");
 
-        createPlayer("Stev", 1580, 800, "player_blue.png",
-                "missile_blue.png",
+        createPlayer("Steven", 1630, 700, "player_blue.png",
+                "missile_blue.png", PhysicsSprite.Directions.LEFT,
                 "LEFT", "RIGHT", "UP", "SLASH");
 //
 //        createPlayer("Ahbi", 950, 350, "player_green.png",
@@ -59,9 +61,10 @@ public class Game extends JPanel implements ActionListener {
     }
 
     private void createPlayer(String playerName, int x, int y, String imagePath, String missileImagePath,
-                              String leftKey, String rightKey, String jumpKey, String shootKey) {
+                              PhysicsSprite.Directions direction, String leftKey, String rightKey, String jumpKey,
+                              String shootKey) {
 
-        Player player = new Player(playerName, x, y, imagePath, missileImagePath, leftKey, rightKey, jumpKey, shootKey);
+        Player player = new Player(playerName, x, y, imagePath, missileImagePath, direction, leftKey, rightKey, jumpKey, shootKey);
         players.add(player);
         add(player);  // add JComponent to JPanel
     }
@@ -78,7 +81,6 @@ public class Game extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setFont(f);
         drawComponents(g);
 
         Toolkit.getDefaultToolkit().sync();
@@ -104,12 +106,22 @@ public class Game extends JPanel implements ActionListener {
         for (Player player: players) {
             drawPlayer(g2d, player);
             drawCooldown(g2d, player);
+            drawScore(g2d, player);
 
             Missile missile = player.getMissile();
             if (missile != null) {
                 drawMissile(g2d, missile);
             }
         }
+    }
+
+    private void drawScore(Graphics2D g2d, Player player) {
+        g2d.setFont(scoreFont);
+        int scorePosOffset = 0;
+        if (player.getScore() > 0) {
+            scorePosOffset = (int) Math.floor(Math.log10(player.getScore())) * 5;
+        }
+        g2d.drawString(Integer.toString(player.getScore()), player.getX() - scorePosOffset, player.getY() - 4);
     }
 
     private void drawMissile(Graphics2D g2d, Missile missile) {
@@ -132,7 +144,8 @@ public class Game extends JPanel implements ActionListener {
 
     private void drawCooldown(Graphics2D g2d, Player player) {
         int cooldownTicks = player.getMissileCooldown();
-        String cooldown = "■■■■■■■■■■■■".substring(0, (int) Math.ceil((double) cooldownTicks / 25));
-        g2d.drawString(cooldown, player.getX(), player.getY() - 5);
+        g2d.setFont(cooldownFont);
+        String cooldown = "■■■■■■".substring(0, (int) Math.ceil((double) cooldownTicks / 50));
+        g2d.drawString(cooldown, player.getX() + 9, player.getY() - 5);
     }
 }

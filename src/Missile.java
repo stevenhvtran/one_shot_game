@@ -2,7 +2,7 @@ public class Missile extends PhysicsSprite {
     private Directions direction;
 
     public Missile(int x, int y, String imagePath, Directions direction) {
-        super(x, y, imagePath, 10, 0);
+        super(x, y, imagePath, 40, 0);
         this.direction = direction;
         initVelocity();
     }
