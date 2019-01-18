@@ -5,14 +5,12 @@ import java.io.IOException;
 
 public class Sprite extends JComponent {
     private int x, y;
-    private boolean visible;
     private int height, width;
     private Image image;
 
-    public Sprite( int x, int y, String imagePath ) {
+    Sprite( int x, int y, String imagePath ) {
         this.x = x;
         this.y = y;
-        visible = true;
 
         loadImage(imagePath);
         width = image.getWidth(null);
@@ -37,15 +35,15 @@ public class Sprite extends JComponent {
         return y;
     }
 
-    public void setX( int x ) { this.x = x; }
+    void setX( int x ) { this.x = x; }
 
-    public void setY( int y ) { this.y = y; }
+    void setY( int y ) { this.y = y; }
 
     public int getWidth() { return width; }
 
     public int getHeight() { return height; }
 
-    public Image getImage() { return image; }
+    Image getImage() { return image; }
 
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);

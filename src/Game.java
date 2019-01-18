@@ -12,7 +12,7 @@ public class Game extends JPanel implements ActionListener {
     private Font cooldownFont = new Font("Dialog", Font.BOLD, 6);
     private Font scoreFont = new Font("Dialong", Font.BOLD, 10);
 
-    public Game () {
+    Game () {
         initGame();
     }
 
@@ -26,7 +26,6 @@ public class Game extends JPanel implements ActionListener {
 
         Timer timer = new Timer(DELAY, this);
         timer.start();
-
     }
 
     private void initPlatform() {
@@ -64,7 +63,8 @@ public class Game extends JPanel implements ActionListener {
                               PhysicsSprite.Directions direction, String leftKey, String rightKey, String jumpKey,
                               String shootKey) {
 
-        Player player = new Player(playerName, x, y, imagePath, missileImagePath, direction, leftKey, rightKey, jumpKey, shootKey);
+        Player player = new Player(playerName, x, y, imagePath, missileImagePath, direction, leftKey, rightKey, jumpKey,
+                shootKey);
         players.add(player);
         add(player);  // add JComponent to JPanel
     }

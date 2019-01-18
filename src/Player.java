@@ -19,7 +19,7 @@ public class Player extends PhysicsSprite {
     private String name;
     private int score = 0;
 
-    public Player(String name, int x, int y, String imagePath, String missileImagePath,
+    Player(String name, int x, int y, String imagePath, String missileImagePath,
                   PhysicsSprite.Directions direction, String leftKey, String rightKey, String jumpKey,
                   String shootKey) {
         super(x, y, imagePath, 3, 5);
@@ -41,13 +41,13 @@ public class Player extends PhysicsSprite {
         return name;
     }
 
-    public int getScore() { return score; }
+    int getScore() { return score; }
 
-    public int getMissileCooldown() {
+    int getMissileCooldown() {
         return missileCooldown;
     }
 
-    public void incrementScore() {
+    void incrementScore() {
         score += 1;
     }
     
@@ -75,7 +75,7 @@ public class Player extends PhysicsSprite {
     private class MoveAction extends AbstractAction {
         private Player.Keys key;
 
-        public MoveAction(Player.Keys key) {
+        MoveAction(Player.Keys key) {
             this.key = key;
         }
 
@@ -88,7 +88,7 @@ public class Player extends PhysicsSprite {
     private class StopAction extends AbstractAction {
         private Player.Keys key;
 
-        public StopAction(Player.Keys key) {
+        StopAction(Player.Keys key) {
             this.key = key;
         }
 
@@ -98,7 +98,7 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public void handleKeyPress(Keys key) {
+    private void handleKeyPress(Keys key) {
         switch(key) {
             case LEFT:
                 setLeftVelocity(getMaxHorizontalVelocity());
@@ -120,7 +120,7 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public void handleKeyRelease(Keys key) {
+    private void handleKeyRelease(Keys key) {
         switch(key) {
             case LEFT:
                 setLeftVelocity(0);
@@ -133,13 +133,11 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public void setOnFloor() {
+    void setOnFloor() {
         onFloor = true;
     }
 
-    public boolean getOnFloor() { return onFloor; }
-
-    public void resetSpawn() {
+    void resetSpawn() {
         setX(initialX);
         setY(initialY);
     }
@@ -158,11 +156,11 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public void deleteMissile() {
+    void deleteMissile() {
         missile = null;
     }
 
-    public Missile getMissile() {
+    Missile getMissile() {
         return missile;
     }
 
@@ -187,7 +185,7 @@ public class Player extends PhysicsSprite {
         }
     }
 
-    public Direction getCollisionDirection(Platform platform) {
+    Direction getCollisionDirection(Platform platform) {
         for (Direction direction : Direction.values()) {
             if (intersectsPlatform(direction, platform)) {
                 return direction;

@@ -38,33 +38,33 @@ public class PhysicsSprite extends Sprite {
         }
     }
 
-    public void setDirection(Directions direction) { this.direction = direction; }
+    void setDirection(Directions direction) { this.direction = direction; }
 
-    public void setLeftVelocity(int leftVelocity) {
+    void setLeftVelocity(int leftVelocity) {
         this.leftVelocity = -leftVelocity;
     }
 
-    public void setRightVelocity(int rightVelocity) {
+    void setRightVelocity(int rightVelocity) {
         this.rightVelocity = rightVelocity;
     }
 
-    public int getMaxHorizontalVelocity() {
+    int getMaxHorizontalVelocity() {
         return maxHorizontalVelocity;
     }
 
-    public float getVerticalVelocity() {
+    float getVerticalVelocity() {
         return verticalVelocity;
     }
 
-    public void setVerticalVelocity(float verticalVelocity) {
+    void setVerticalVelocity(float verticalVelocity) {
         this.verticalVelocity = verticalVelocity;
     }
 
-    public int getHorizontalVelocity() {
+    int getHorizontalVelocity() {
         return leftVelocity + rightVelocity;
     }
 
-    public int getTerminalVelocity() {
+    int getTerminalVelocity() {
         return terminalVelocity;
     }
 }
